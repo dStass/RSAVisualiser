@@ -2,16 +2,21 @@ import java.util.ArrayList;
 
 public class User {
 	// fields 
-	final long PRIME0 = 547, PRIME1 = 433; // TODO use BigInteger to store even larger numbers
+	final long PRIME0 = 27449, PRIME1 = 8821; // TODO use BigInteger to store even larger primes 7927 8821
 	int id;
 	private String name;
 	private long privateKey;
 	public long publicKey;
-	
+	public long encryptionModulo;
+	private ArrayList<String> encryptedMessages; 	// TODO have a format encrypted String, first (8?) bits represent length of each "block" = 1 character, 
+												 	// followed by uniform blocks of encrypted chars (-> longs)
+													// ie 0819923405011293040019293000203949 = 8 char-long encryptions, 4 encrypted characters
+	private ArrayList<String> decryptedMessages;
 	
 	public User(int id) {
 		this.id = id;
 		assignKeys();
+		encryptedMessages = new ArrayList<String>();
 	}
 	 
 	public void populateData(String name) {
@@ -29,19 +34,24 @@ public class User {
 		// randomly try and find an e in (1,phiOfN)
 		
 		long e = getRandomE(phiOfN);
-		long d = getInverse(e, phiOfN);
-		if (d == e) assignKeys(); // rerun if d == e
+		long d = MathFunctions.getInverseModulo(e, phiOfN);
+		if (d == e) {
+			assignKeys(); // rerun if d == e
+			return;
+		}
 		privateKey = d;
 		publicKey = e;
+		encryptionModulo = n;
 		
-		System.out.println(e + " * " + d + " = 1 (mod "+phiOfN+"), n="+n);
+		//System.out.println(e + " * " + d + " = 1 (modphi= "+phiOfN+"), n="+n);
+		System.out.println("E(public) = " + publicKey + ", D(private) = " + privateKey + " mod " + encryptionModulo);
 
 	}
 
 	
 	
 	private long getRandomE(long phiOfN) {
-		// keep trying random vals until we find e such that gcd = 1
+		// keep trying random vals until we find e such that gcd(e,phiOfN) = 1
 		while (true) {
 			
 			long random = (long) Math.floor(Math.random() * phiOfN);
@@ -61,26 +71,45 @@ public class User {
 	
 	
 	
-	// solution from https://discuss.codechef.com/questions/1440/algorithm-to-find-inverse-modulo-m
-	private long getInverse(long a, long m) { // find inverse to a (modulo m)
-		Coordinate c = new Coordinate();
-		applyExtendedEuclidean(a,m,c);
-		if (c.getX() < 0) c.setX(c.getX() + m);
-		return c.getX();
+
+	
+	public long getPublicKey() {
+		return publicKey;
+	}
+	
+	public long getEncryptionModulo() {
+		return encryptionModulo;
+	}
+	
+	public void receiveEncryptedMessage(long[] encryptedMessage) {
+		//encryptedMessages.add(encryptedMessage);
+	}
+
+	public void receiveEncryptedString(String encryptedString) {
+		// TODO 
+		encryptedMessages.add(encryptedString);
+		String decryptedString = decryptString(encryptedString);
+		System.out.println("decrypted=" + decryptedString);
+		// hello
 		
 	}
-	
-	
-	private void applyExtendedEuclidean(long a, long b, Coordinate c) {
-		if (a % b == 0) {
-			c.setX(0);
-			c.setY(1);
-			return;
+
+	private String decryptString(String encryptedString) {
+		int blockLength = Integer.parseInt(encryptedString.substring(0,2));
+		String decryptedString = "";
+		for (int i = 2; i < encryptedString.length(); i+=blockLength) {
+			String blockStr = encryptedString.substring(i, i + blockLength);
+			System.out.print("block = " + blockStr);
+			long parsedBlock = Long.parseLong(blockStr);
+			long decryptedValue = MathFunctions.raiseNumToExponentModulo(parsedBlock, privateKey, encryptionModulo);
+			System.out.println(" --[^privKey]--> " + decryptedValue + " (mod " + encryptionModulo+")");
+			char decryptedChar = (char) decryptedValue;
+			decryptedString += decryptedChar;
+			
+			// raise inside the array to decrypt private key and store in another array 
+			
 		}
-		applyExtendedEuclidean(b, a%b, c);
-		long temp = c.getX();
-		c.setX(c.getY());
-		c.setY(temp - c.getY() * (a/b));
+		
+		return decryptedString;
 	}
-	
 }
