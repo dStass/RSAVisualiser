@@ -1,15 +1,27 @@
+import java.util.HashMap;
 
 public class MathFunctions {
-
+	public final static int TOTAL_ASCII_DIGITS = 128;
 	
+	
+	
+	
+	
+	public static long raiseNumToExponentModulo(long x, long n, long m) {
+		return raiseNumToExponentModulo(x, n, m, false);
+		
+	}
 	
 	
 	// return x^n (mod m)
 	// TODO optimisations, fast ways of raising powers:
 	// keep raising until we reach x^k = 1 mod m, then factor exponent out 
 	// maybe recursive?
-	public static long raiseNumToExponentModulo(long x, long n, long m) {
-		long[] calculations = new long[(int) n];
+	public static long raiseNumToExponentModulo(long x, long n, long m, boolean optimise) {
+		long[] calculations;
+		if (optimise) calculations = new long[TOTAL_ASCII_DIGITS];
+		else calculations = new long[(int) n]; // optimise: keep arraylist, store what we have to store
+		
 		int cycles = 0;
 		long ans = x;
 		long xMod = x % m;
@@ -17,16 +29,22 @@ public class MathFunctions {
 		calculations[0] = ans;
     	for (int i = 1; i < n; i++) {
     		cycles++;
-    		ans *= xMod;
+    		ans *= xMod; 
     		ans %= m;
-    		calculations[cycles] = ans;
-    		if (ans < 0) ans += m;
+    		ans += (ans < 0 ? m : 0);
+    		if (optimise) {
+    			 if (ans < TOTAL_ASCII_DIGITS) calculations[(int) ans] = cycles;
+    		} else calculations[cycles] = ans;
     		if (ans == 1) {
-    			int storedLocation = (int) (n % (cycles+1));
-    			return calculations[storedLocation-1];
-    			// TODO memory optimization: only store within ascii limit, all calculations unnecessary
-    			// 0 -> 127
-    			
+    			if (optimise) {
+    				for (int j = 1; j < TOTAL_ASCII_DIGITS; j++) {
+    					int storedLocation = (int) (n % (cycles + 1));
+        				if ((storedLocation - 1) == calculations[j]) return j; 
+    				}
+    			} else {
+    				int storedLocation = (int) (n % (cycles+1));
+        			return calculations[storedLocation-1];
+    			}
     		}
     	}
 		return ans;

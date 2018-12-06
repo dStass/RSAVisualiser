@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class User {
 	// fields 
-	final long PRIME0 = 27449, PRIME1 = 8821; // TODO use BigInteger to store even larger primes 7927 8821
+	final long PRIME0 = 27449, PRIME1 = 8821; // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
 	int id;
 	private String name;
 	private long privateKey;
@@ -101,7 +101,7 @@ public class User {
 			String blockStr = encryptedString.substring(i, i + blockLength);
 			System.out.print("block = " + blockStr);
 			long parsedBlock = Long.parseLong(blockStr);
-			long decryptedValue = MathFunctions.raiseNumToExponentModulo(parsedBlock, privateKey, encryptionModulo);
+			long decryptedValue = MathFunctions.raiseNumToExponentModulo(parsedBlock, privateKey, encryptionModulo, true);
 			System.out.println(" --[^privKey]--> " + decryptedValue + " (mod " + encryptionModulo+")");
 			char decryptedChar = (char) decryptedValue;
 			decryptedString += decryptedChar;

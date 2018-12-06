@@ -1,5 +1,7 @@
- public class Application {
-	final static String MESSAGE = "ys$0._mPPz";
+//import javafx.application.Application; 
+
+public class Application {
+	final static String MESSAGE = "ys$0._mPPz!~``\\";
 	/*
 	 * 
 	 * 
