@@ -66,35 +66,45 @@ public class MathFunctions {
 	}
 	
 	public static BigInteger raiseNumToExponentModuloBig(BigInteger x, BigInteger n, BigInteger m) {
-		BigInteger toRet = null;
+		BigInteger zero = new BigInteger("0");
+		BigInteger one = new BigInteger("1");
+		BigInteger two = new BigInteger("2");
 		
-		
-		
-		return toRet;
+		if (n.compareTo(zero) == 0) return one;
+		if (n.compareTo(one) == 0) return x; // x already modded by m
+		BigInteger xMod = x.mod(m);
+		BigInteger xMod2 = xMod.multiply(xMod);
+		xMod2 = xMod2.mod(m);
+		if (n.mod(two).compareTo(zero) == 0) {
+			return raiseNumToExponentModuloBig(xMod2, n.divide(two), m);
+		} else {
+			BigInteger pow = (n.subtract(one)).divide(two);
+			return raiseNumToExponentModuloBig(xMod2, pow, m);
+		}
 	}
 	
 	
 	
 	
 	// solution from https://discuss.codechef.com/questions/1440/algorithm-to-find-inverse-modulo-m
-	public static long getInverseModulo(long a, long m) { // find inverse to a (modulo m)
+	public static BigInteger getInverseModulo(BigInteger a, BigInteger m) { // find inverse to a (modulo m)
 		Coordinate c = new Coordinate();
 		applyExtendedEuclidean(a,m,c);
-		if (c.getX() < 0) c.setX(c.getX() + m);
+		if (c.getX().compareTo(BigInteger.ZERO) == -1) c.setX(c.getX().add(m));
 		return c.getX();
 		
 	}
 	
 	
-	public static void applyExtendedEuclidean(long a, long b, Coordinate c) {
-		if (a % b == 0) {
-			c.setX(0);
-			c.setY(1);
+	public static void applyExtendedEuclidean(BigInteger a, BigInteger b, Coordinate c) {
+		if (a.mod(b).compareTo(BigInteger.ZERO) == 0) {
+			c.setX(BigInteger.ZERO);
+			c.setY(BigInteger.ONE);
 			return;
 		}
-		applyExtendedEuclidean(b, a%b, c);
-		long temp = c.getX();
+		applyExtendedEuclidean(b, a.mod(b), c);
+		BigInteger temp = c.getX();
 		c.setX(c.getY());
-		c.setY(temp - c.getY() * (a/b));
+		c.setY(temp.subtract(c.getY().multiply((a.divide(b)))));
 	}
 }

@@ -1,13 +1,15 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class User {
 	// fields 
-	final long PRIME0 = 98041, PRIME1 = 80777; // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
+	final BigInteger PRIME0 = new BigInteger("98041"),
+					 PRIME1 = new BigInteger("80777"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
 	int id;
 	private String name;
-	private long privateKey;
-	public long publicKey;
-	public long encryptionModulo;
+	private BigInteger privateKey;
+	public BigInteger publicKey;
+	public BigInteger encryptionModulo;
 	private ArrayList<String> encryptedMessages; 	// TODO have a format encrypted String, first (8?) bits represent length of each "block" = 1 character, 
 												 	// followed by uniform blocks of encrypted chars (-> longs)
 													// ie 0819923405011293040019293000203949 = 8 char-long encryptions, 4 encrypted characters
@@ -25,16 +27,16 @@ public class User {
 	
 	public void assignKeys() {
 		// TODO choose 2 random primes from list of primes
-		long p = PRIME0, q = PRIME1; // choose p and q
-	
-		long n = p*q;
-		long phiOfN = (p-1)*(q-1);
+		BigInteger p = PRIME0, q = PRIME1;
+		
+		BigInteger n = p.multiply(q);
+		BigInteger phiOfN = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));//(p-1)*(q-1);
 		
 		// choose e from {1..phiOfN} such that gcd(e,phiOfN)=1 (ie e and phiOfN are co-prime)
 		// randomly try and find an e in (1,phiOfN)
 		
-		long e = getRandomE(phiOfN);
-		long d = MathFunctions.getInverseModulo(e, phiOfN);
+		BigInteger e = getRandomE(phiOfN);
+		BigInteger d = MathFunctions.getInverseModulo(e, phiOfN);
 		if (d == e) {
 			assignKeys(); // rerun if d == e
 			return;
@@ -50,13 +52,13 @@ public class User {
 
 	
 	
-	private long getRandomE(long phiOfN) {
+	private BigInteger getRandomE(BigInteger phiOfN) {
 		// keep trying random vals until we find e such that gcd(e,phiOfN) = 1
 		while (true) {
 			
-			long random = (long) Math.floor(Math.random() * phiOfN);
-			long gcd = getGCD(random, phiOfN);
-			if (gcd == 1) return random;	
+			BigInteger random = (phiOfN.multiply(BigInteger.valueOf((long) Math.random())))  ; //(long) Math.floor(Math.random() * phiOfN);
+			BigInteger gcd = getGCD(random, phiOfN);
+			if (gcd.compareTo(BigInteger.ONE) == 0) return random;	
 			System.out.println("phi=" + phiOfN + ", ran=" + random + ", gcd=" + gcd);
 		}
 
@@ -64,20 +66,20 @@ public class User {
 	
 	
 	// https://stackoverflow.com/questions/4009198/java-get-greatest-common-divisor
-	private long getGCD(long a, long b) {
-		if (b==0) return a;
-		return getGCD(b,a%b);
+	private BigInteger getGCD(BigInteger a, BigInteger b) {
+		if (b.compareTo(BigInteger.ZERO) == 0) return a;
+		return getGCD(b,a.mod(b));
 	}
 	
 	
 	
 
 	
-	public long getPublicKey() {
+	public BigInteger getPublicKey() {
 		return publicKey;
 	}
 	
-	public long getEncryptionModulo() {
+	public BigInteger getEncryptionModulo() {
 		return encryptionModulo;
 	}
 	
@@ -100,10 +102,10 @@ public class User {
 		for (int i = 2; i < encryptedString.length(); i+=blockLength) {
 			String blockStr = encryptedString.substring(i, i + blockLength);
 			System.out.print("block = " + blockStr);
-			long parsedBlock = Long.parseLong(blockStr);
-			long decryptedValue = MathFunctions.raiseNumToExponentModuloOptimised(parsedBlock, privateKey, encryptionModulo);
+			BigInteger parsedBlock = new BigInteger(blockStr);
+			BigInteger decryptedValue = MathFunctions.raiseNumToExponentModuloBig(parsedBlock, privateKey, encryptionModulo);
 			System.out.println(" --[^privKey]--> " + decryptedValue + " (mod " + encryptionModulo+")");
-			char decryptedChar = (char) decryptedValue;
+			char decryptedChar = (char) decryptedValue.longValue();
 			decryptedString += decryptedChar;
 			
 			// raise inside the array to decrypt private key and store in another array 
