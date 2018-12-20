@@ -53,7 +53,7 @@ public class Server {
 	private long raiseCharToPowerModulo(char c, long n, long m) {
 		int cInt = c;
 		System.out.print(c+ ": " + cInt);
-		long toReturn = MathFunctions.raiseNumToExponentModulo(cInt, n, m);
+		long toReturn = MathFunctions.raiseNumToExponentModuloOptimised(cInt, n, m);
 		System.out.println(" --[^pubKey]--> " + toReturn);
 		
 		return toReturn;

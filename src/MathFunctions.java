@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.HashMap;
 
 public class MathFunctions {
@@ -49,6 +50,29 @@ public class MathFunctions {
     	}
 		return ans;
 	}
+	
+	public static long raiseNumToExponentModuloOptimised(long x, long n, long m) {
+		if (n == 0) return 1;
+		if (n == 1) return (x%m);
+		long xMod = x % m;
+		long xMod2 = xMod * xMod;
+		xMod2 %= m;
+		long nHalf = n / 2;
+		if (n % 2 == 0) {
+			return raiseNumToExponentModuloOptimised(xMod2, nHalf, m);
+		} else {
+			return ((raiseNumToExponentModuloOptimised(xMod2, (n-1)/2 , m) * xMod) % m);
+		}
+	}
+	
+	public static BigInteger raiseNumToExponentModuloBig(BigInteger x, BigInteger n, BigInteger m) {
+		BigInteger toRet = null;
+		
+		
+		
+		return toRet;
+	}
+	
 	
 	
 	
