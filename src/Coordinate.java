@@ -14,9 +14,9 @@ public class Coordinate {
 		y = new BigInteger(n.toString());
 	}
 	public BigInteger getX() {
-		return x;
+		return x.multiply(BigInteger.ONE);
 	}
 	public BigInteger getY() {
-		return y;
+		return y.multiply(BigInteger.ONE);
 	}
 }

@@ -1,10 +1,11 @@
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class User {
 	// fields 
 	final BigInteger PRIME0 = new BigInteger("98041"),
-					 PRIME1 = new BigInteger("80777"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
+					 PRIME1 = new BigInteger("99991"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
 	int id;
 	private String name;
 	private BigInteger privateKey;
@@ -52,14 +53,22 @@ public class User {
 
 	
 	
-	private BigInteger getRandomE(BigInteger phiOfN) {
+	private BigInteger getRandomE(BigInteger upperLimit) {
 		// keep trying random vals until we find e such that gcd(e,phiOfN) = 1
 		while (true) {
 			
-			BigInteger random = (phiOfN.multiply(BigInteger.valueOf((long) Math.random())))  ; //(long) Math.floor(Math.random() * phiOfN);
-			BigInteger gcd = getGCD(random, phiOfN);
+		//	BigInteger random = (phiOfN.multiply(BigInteger.valueOf((long) Math.random())))  ; //(long) Math.floor(Math.random() * phiOfN);
+			//BigInteger rand = new BigInteger(upperLimit.bi);
+//			BigInteger gcd = getGCD(random, phiOfN);
+//			if (gcd.compareTo(BigInteger.ONE) == 0) return random;	
+//			System.out.println("phi=" + phiOfN + ", ran=" + random + ", gcd=" + gcd);
+			
+			Random rand = new Random();
+			int maxBitLength = upperLimit.bitLength();
+			BigInteger random;
+			random = new BigInteger(maxBitLength, rand);
+			BigInteger gcd = getGCD(random, upperLimit);
 			if (gcd.compareTo(BigInteger.ONE) == 0) return random;	
-			System.out.println("phi=" + phiOfN + ", ran=" + random + ", gcd=" + gcd);
 		}
 
 	}

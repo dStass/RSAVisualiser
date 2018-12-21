@@ -79,7 +79,7 @@ public class MathFunctions {
 			return raiseNumToExponentModuloBig(xMod2, n.divide(two), m);
 		} else {
 			BigInteger pow = (n.subtract(one)).divide(two);
-			return raiseNumToExponentModuloBig(xMod2, pow, m);
+			return raiseNumToExponentModuloBig(xMod2, pow, m).multiply(xMod).mod(m);
 		}
 	}
 	
