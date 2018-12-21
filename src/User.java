@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class User {
 	// fields 
-	final long PRIME0 = 98041, PRIME1 = 80777; // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
+	final long PRIME0 = 27449, PRIME1 = 80777; // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
 	int id;
 	private String name;
 	private long privateKey;
