@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class User {
 	// fields 
-	final BigInteger PRIME0 = new BigInteger("98041"),
-					 PRIME1 = new BigInteger("99991"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
+	final BigInteger PRIME0 = new BigInteger("7212610147295474909544523785043492409969382148186765460082500085393519556525921455588705423020751421"),
+					 PRIME1 = new BigInteger("1814159566819970307982681716822107016038920170504391457462563485198126916735167260215619523429714031"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
 	int id;
 	private String name;
 	private BigInteger privateKey;
@@ -31,7 +31,7 @@ public class User {
 		BigInteger p = PRIME0, q = PRIME1;
 		
 		BigInteger n = p.multiply(q);
-		BigInteger phiOfN = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));//(p-1)*(q-1);
+		BigInteger phiOfN = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));//(p-1)*(q-1);
 		
 		// choose e from {1..phiOfN} such that gcd(e,phiOfN)=1 (ie e and phiOfN are co-prime)
 		// randomly try and find an e in (1,phiOfN)
@@ -47,7 +47,7 @@ public class User {
 		encryptionModulo = n;
 		
 		//System.out.println(e + " * " + d + " = 1 (modphi= "+phiOfN+"), n="+n);
-		System.out.println("E(public) = " + publicKey + ", D(private) = " + privateKey + " mod " + encryptionModulo);
+		System.out.println("E(public) = " + publicKey + "\nD(private) = " + privateKey + "\n(mod " + encryptionModulo+")\n\n");
 
 	}
 
@@ -106,9 +106,9 @@ public class User {
 	}
 
 	private String decryptString(String encryptedString) {
-		int blockLength = Integer.parseInt(encryptedString.substring(0,2));
+		int blockLength = Integer.parseInt(encryptedString.substring(0,8));
 		String decryptedString = "";
-		for (int i = 2; i < encryptedString.length(); i+=blockLength) {
+		for (int i = 8; i < encryptedString.length(); i+=blockLength) {
 			String blockStr = encryptedString.substring(i, i + blockLength);
 			System.out.print("block = " + blockStr);
 			BigInteger parsedBlock = new BigInteger(blockStr);

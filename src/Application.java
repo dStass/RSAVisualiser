@@ -1,7 +1,7 @@
 //import javafx.application.Application; 
 
 public class Application {
-	final static String MESSAGE = "ELLENI"; // ys$0._mPPz!~``\\
+	final static String MESSAGE = "ElLeNi"; // ys$0._mPPz!~``\\
 	/*
 	 * 
 	 * 

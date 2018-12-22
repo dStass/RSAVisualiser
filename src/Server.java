@@ -26,7 +26,7 @@ public class Server {
 			int longestDigits = 0;
 			for (int i = 0; i < messageLength; i++) {
 				encryptedMessage[i] = encryptCharWithKey(m.charAt(i), u.getPublicKey(), u.getEncryptionModulo());
-				int currDigits = (int) (Math.log10(encryptedMessage[i].intValue()) + 1);
+				int currDigits = encryptedMessage[i].toString().length();
 				if (currDigits > longestDigits) longestDigits = currDigits;
 			}
 			
@@ -39,7 +39,7 @@ public class Server {
 	
 	// return format [lengthEachBlock][blocks0][block1]..., lengthEachBlock = first 2 chars, or 3
 	private String produceEncryptedString(BigInteger[] encryptedMessage, int padding) {
-		String toReturn = String.format("%02d", padding);
+		String toReturn = String.format("%08d", padding);
 	
 		for (int i = 0; i < encryptedMessage.length; i++) {
 			toReturn += String.format("%0" + padding + "d", encryptedMessage[i]);
