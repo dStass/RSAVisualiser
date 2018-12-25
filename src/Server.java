@@ -29,9 +29,14 @@ public class Server {
 				int currDigits = encryptedMessage[i].toString().length();
 				if (currDigits > longestDigits) longestDigits = currDigits;
 			}
-			
+			System.out.println("headerLength = " + longestDigits);
 			String encryptedString = produceEncryptedString(encryptedMessage, longestDigits);
-			System.out.println("EnCrYpTeD sTrInG ===> " + encryptedString);
+			System.out.println("EnCrYpTeD sTrInG ===> ");
+			for (int i = 0; i < encryptedString.length(); i++) {
+				System.out.print(encryptedString.charAt(i));
+				if ((i+1)%longestDigits == 0) System.out.println();
+			}
+			System.out.println();
 			u.receiveEncryptedString(encryptedString);
 		}
 	}

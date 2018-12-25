@@ -4,8 +4,9 @@ import java.util.Random;
 
 public class User {
 	// fields 
-	final BigInteger PRIME0 = new BigInteger("7212610147295474909544523785043492409969382148186765460082500085393519556525921455588705423020751421"),
-					 PRIME1 = new BigInteger("1814159566819970307982681716822107016038920170504391457462563485198126916735167260215619523429714031"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
+	// TODO: generate primes
+	final BigInteger PRIME0 = new BigInteger("203956878356401977405765866929034577280193993314348263094772646453283062722701277632936616063144088173312372882677123879538709400158306567338328279154499698366071906766440037074217117805690872792848149112022286332144876183376326512083574821647933992961249917319836219304274280243803104015000563790123"),
+					 PRIME1 = new BigInteger("290245329165570025116016487217740287508837913295571609463914348778319654489118435855243301969001872061575755804802874062021927719647357060447135321577028929269578574760547268310055056867386875959045119093967972205124270441648450825188877095173754196346551952542599226295413057787340278528252358809329"); // TODO use BigInteger to store even larger primes 7927 8821 | 27449 8821
 	int id;
 	private String name;
 	private BigInteger privateKey;
@@ -13,7 +14,7 @@ public class User {
 	public BigInteger encryptionModulo;
 	private ArrayList<String> encryptedMessages; 	// TODO have a format encrypted String, first (8?) bits represent length of each "block" = 1 character, 
 												 	// followed by uniform blocks of encrypted chars (-> longs)
-													// ie 0819923405011293040019293000203949 = 8 char-long encryptions, 4 encrypted characters
+													// ie 0000000819923405011293040019293000203949 = 8 char-long encryptions, 4 encrypted characters
 	private ArrayList<String> decryptedMessages;
 	
 	public User(int id) {
@@ -47,6 +48,7 @@ public class User {
 		encryptionModulo = n;
 		
 		//System.out.println(e + " * " + d + " = 1 (modphi= "+phiOfN+"), n="+n);
+		System.out.println("p(" + p.toString().length() + "), q(" + q.toString().length() + ")");
 		System.out.println("E(public) = " + publicKey + "\nD(private) = " + privateKey + "\n(mod " + encryptionModulo+")\n\n");
 
 	}
