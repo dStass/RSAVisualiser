@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Server {
@@ -19,26 +20,31 @@ public class Server {
 	
 	public void sendMessageToAllUsers(String m) {
 		int messageLength = m.length();
-		long[] encryptedMessage = new long[messageLength];
-		for (int i = 0; i < messageLength; i++) encryptedMessage[i] = 0; // initialise
+		BigInteger[] encryptedMessage = new BigInteger[messageLength];
+		for (int i = 0; i < messageLength; i++) encryptedMessage[i] = BigInteger.ZERO; // initialise
 		for (User u : users) {
 			int longestDigits = 0;
 			for (int i = 0; i < messageLength; i++) {
 				encryptedMessage[i] = encryptCharWithKey(m.charAt(i), u.getPublicKey(), u.getEncryptionModulo());
-				int currDigits = (int) (Math.log10(encryptedMessage[i]) + 1);
+				int currDigits = encryptedMessage[i].toString().length();
 				if (currDigits > longestDigits) longestDigits = currDigits;
 			}
-			
+			System.out.println("headerLength = " + longestDigits);
 			String encryptedString = produceEncryptedString(encryptedMessage, longestDigits);
-			System.out.println("EnCrYpTeD sTrInG ===> " + encryptedString);
+			System.out.println("EnCrYpTeD sTrInG ===> ");
+			for (int i = 0; i < encryptedString.length(); i++) {
+				System.out.print(encryptedString.charAt(i));
+				if ((i+1)%longestDigits == 0) System.out.println();
+			}
+			System.out.println();
 			u.receiveEncryptedString(encryptedString);
 		}
 	}
 	
 	
 	// return format [lengthEachBlock][blocks0][block1]..., lengthEachBlock = first 2 chars, or 3
-	private String produceEncryptedString(long[] encryptedMessage, int padding) {
-		String toReturn = String.format("%02d", padding);
+	private String produceEncryptedString(BigInteger[] encryptedMessage, int padding) {
+		String toReturn = String.format("%08d", padding);
 	
 		for (int i = 0; i < encryptedMessage.length; i++) {
 			toReturn += String.format("%0" + padding + "d", encryptedMessage[i]);
@@ -46,14 +52,15 @@ public class Server {
 		return toReturn;
 	}
 
-	private long encryptCharWithKey(char c, long e, long m) {
+	private BigInteger encryptCharWithKey(char c, BigInteger e, BigInteger m) {
 		return raiseCharToPowerModulo(c, e, m);
 	}
 	
-	private long raiseCharToPowerModulo(char c, long n, long m) {
+	private BigInteger raiseCharToPowerModulo(char c, BigInteger n, BigInteger m) {
 		int cInt = c;
+		BigInteger cIntBig = new BigInteger(Integer.toString(cInt));
 		System.out.print(c+ ": " + cInt);
-		long toReturn = MathFunctions.raiseNumToExponentModuloOptimised(cInt, n, m);
+		BigInteger toReturn = MathFunctions.raiseNumToExponentModuloBig(cIntBig, n, m);
 		System.out.println(" --[^pubKey]--> " + toReturn);
 		
 		return toReturn;

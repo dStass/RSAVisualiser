@@ -1,21 +1,22 @@
+import java.math.BigInteger;
 
 public class Coordinate {
-	private long x, y;
+	private BigInteger x, y;
 	public Coordinate() {
-		x = 0;
-		y = 0;
+		x = BigInteger.ZERO;
+		y = BigInteger.ZERO;
 	}
 	
-	public void setX(long n) {
-		x = n;
+	public void setX(BigInteger n) {
+		x = new BigInteger(n.toString());
 	}
-	public void setY(long n) {
-		y = n;
+	public void setY(BigInteger n) {
+		y = new BigInteger(n.toString());
 	}
-	public long getX() {
-		return x;
+	public BigInteger getX() {
+		return x.multiply(BigInteger.ONE);
 	}
-	public long getY() {
-		return y;
+	public BigInteger getY() {
+		return y.multiply(BigInteger.ONE);
 	}
 }
