@@ -1,71 +1,10 @@
 import java.math.BigInteger;
-import java.util.HashMap;
 
 public class MathFunctions {
 	public final static int TOTAL_ASCII_DIGITS = 128;
+
 	
-	
-	
-	
-	
-	public static long raiseNumToExponentModulo(long x, long n, long m) {
-		return raiseNumToExponentModulo(x, n, m, false);
-		
-	}
-	
-	
-	// return x^n (mod m)
-	// TODO optimisations, fast ways of raising powers:
-	// keep raising until we reach x^k = 1 mod m, then factor exponent out 
-	// maybe recursive?
-	public static long raiseNumToExponentModulo(long x, long n, long m, boolean optimise) {
-		long[] calculations;
-		if (optimise) calculations = new long[TOTAL_ASCII_DIGITS];
-		else calculations = new long[(int) n]; // optimise: keep arraylist, store what we have to store
-		
-		int cycles = 0;
-		long ans = x;
-		long xMod = x % m;
-		ans %= m;
-		calculations[0] = ans;
-    	for (int i = 1; i < n; i++) {
-    		cycles++;
-    		ans *= xMod; 
-    		ans %= m;
-    		ans += (ans < 0 ? m : 0);
-    		if (optimise) {
-    			 if (ans < TOTAL_ASCII_DIGITS) calculations[(int) ans] = cycles;
-    		} else calculations[cycles] = ans;
-    		if (ans == 1) {
-    			if (optimise) {
-    				for (int j = 1; j < TOTAL_ASCII_DIGITS; j++) {
-    					int storedLocation = (int) (n % (cycles + 1));
-        				if ((storedLocation - 1) == calculations[j]) return j; 
-    				}
-    			} else {
-    				int storedLocation = (int) (n % (cycles+1));
-        			return calculations[storedLocation-1];
-    			}
-    		}
-    	}
-		return ans;
-	}
-	
-	public static long raiseNumToExponentModuloOptimised(long x, long n, long m) {
-		if (n == 0) return 1;
-		if (n == 1) return (x%m);
-		long xMod = x % m;
-		long xMod2 = xMod * xMod;
-		xMod2 %= m;
-		long nHalf = n / 2;
-		if (n % 2 == 0) {
-			return raiseNumToExponentModuloOptimised(xMod2, nHalf, m);
-		} else {
-			return ((raiseNumToExponentModuloOptimised(xMod2, (n-1)/2 , m) * xMod) % m);
-		}
-	}
-	
-	public static BigInteger raiseNumToExponentModuloBig(BigInteger x, BigInteger n, BigInteger m) {
+	public static BigInteger raiseNumToExponentModulo(BigInteger x, BigInteger n, BigInteger m) {
 		BigInteger zero = new BigInteger("0");
 		BigInteger one = new BigInteger("1");
 		BigInteger two = new BigInteger("2");
@@ -76,15 +15,13 @@ public class MathFunctions {
 		BigInteger xMod2 = xMod.multiply(xMod);
 		xMod2 = xMod2.mod(m);
 		if (n.mod(two).compareTo(zero) == 0) {
-			return raiseNumToExponentModuloBig(xMod2, n.divide(two), m);
+			return raiseNumToExponentModulo(xMod2, n.divide(two), m);
 		} else {
 			BigInteger pow = (n.subtract(one)).divide(two);
-			return raiseNumToExponentModuloBig(xMod2, pow, m).multiply(xMod).mod(m);
+			return raiseNumToExponentModulo(xMod2, pow, m).multiply(xMod).mod(m);
 		}
 	}
-	
-	
-	
+		
 	
 	// solution from https://discuss.codechef.com/questions/1440/algorithm-to-find-inverse-modulo-m
 	public static BigInteger getInverseModulo(BigInteger a, BigInteger m) { // find inverse to a (modulo m)
@@ -107,4 +44,37 @@ public class MathFunctions {
 		c.setX(c.getY());
 		c.setY(temp.subtract(c.getY().multiply((a.divide(b)))));
 	}
+	
+	
+	// returns last digit of a BigInteger
+	public static int getLastDigit(BigInteger n) {
+		String numberStr = n.toString();
+		char lastDigitChar = numberStr.charAt(numberStr.length()-1);
+		int lastDigit = Integer.parseInt(new String() + lastDigitChar);
+		return lastDigit;
+	}
+	
+	
+	
+	public static BigInteger randomOddBigInteger(int digits) {
+		BigInteger toReturn;
+		String toReturnStr = "";
+		for (int i = 0; i < digits; i++) {
+			int randomNum = (int) (Math.random()*10);
+			if (i == 0) {
+				while (randomNum == 0) { // make sure first number is not 0
+					randomNum = (int) (Math.random()*10);
+					if (randomNum == 10) randomNum--;
+				}
+			}
+			if (i == digits - 1) { // on last number, generate such that it is odd
+				if (randomNum % 2 == 0) randomNum++;
+			}
+			
+			toReturnStr += (char) ('0'+randomNum);
+		}
+		toReturn = new BigInteger(toReturnStr);
+		return toReturn;
+	}
+	
 }
