@@ -8,15 +8,15 @@ public class Coordinate {
 	}
 	
 	public void setX(BigInteger n) {
-		x = new BigInteger(n.toString());
+		x = n;
 	}
 	public void setY(BigInteger n) {
-		y = new BigInteger(n.toString());
+		y = n;
 	}
 	public BigInteger getX() {
-		return x.multiply(BigInteger.ONE);
+		return x;
 	}
 	public BigInteger getY() {
-		return y.multiply(BigInteger.ONE);
+		return y;
 	}
 }

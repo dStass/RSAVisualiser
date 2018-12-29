@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class User {
-	public final int PRIME_DIGITS = 50; // RSA-1024
+	public final int PRIME_DIGITS = 309; // RSA-1024
 	public static final int HEADER_SIZE = 4;
 	public int id;
 	public String name;
@@ -29,9 +29,11 @@ public class User {
 		
 		// generate p and q prime numbers
 		BigInteger p, q;
-		
+		System.out.println("Generating primes...");
 		p = PrimeGenerator.generate(PRIME_DIGITS);
+		System.out.println("First prime generated");
 		q = PrimeGenerator.generate(PRIME_DIGITS);
+		System.out.println("Second prime generated");
 		while (q.compareTo(p) == 0) q = PrimeGenerator.generate(PRIME_DIGITS); // make sure q != p;
 		
 		
@@ -101,12 +103,14 @@ public class User {
 	private String decryptString(String encryptedString) {
 		int blockLength = Integer.parseInt(encryptedString.substring(0, HEADER_SIZE));
 		String decryptedString = "";
+		System.out.println("Decryption Process:");
 		for (int i = HEADER_SIZE; i < encryptedString.length(); i+=blockLength) {
 			String blockStr = encryptedString.substring(i, i + blockLength);
-			System.out.print("block = " + blockStr);
+			System.out.print(blockStr);
 			BigInteger parsedBlock = new BigInteger(blockStr);
 			BigInteger decryptedValue = MathFunctions.raiseNumToExponentModulo(parsedBlock, privateKey, encryptionModulo);
-			System.out.println(" --[^privKey]--> " + decryptedValue + " (mod EncryptionModulo)");
+			System.out.println(" --[^privKey]--> " + decryptedValue + (decryptedValue.intValue()<100 ? " " : "") + " = " 
+					+ ((char) decryptedValue.intValue()) +" (mod EncryptionModulo)");
 			char decryptedChar = (char) decryptedValue.longValue();
 			decryptedString += decryptedChar;
 

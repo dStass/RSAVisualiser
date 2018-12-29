@@ -29,7 +29,7 @@ public class Server {
 				int currDigits = encryptedMessage[i].toString().length();
 				if (currDigits > longestDigits) longestDigits = currDigits;
 			}
-			System.out.println("headerLength = " + longestDigits);
+			//System.out.println("headerLength = " + longestDigits);
 			String encryptedString = produceEncryptedString(encryptedMessage, longestDigits);
 			System.out.println("EnCrYpTeD sTrInG ===> ");
 			for (int i = 0; i < encryptedString.length(); i++) {
@@ -42,7 +42,7 @@ public class Server {
 	}
 	
 	
-	// return format [lengthEachBlock][blocks0][block1]..., lengthEachBlock = first 2 chars, or 3
+	// TODO return format [lengthEachBlock][blocks0][block1]..., lengthEachBlock = first 4 chars
 	private String produceEncryptedString(BigInteger[] encryptedMessage, int padding) {
 		String toReturn = String.format("%0" + User.HEADER_SIZE + "d", padding);
 	
@@ -59,7 +59,7 @@ public class Server {
 	private BigInteger raiseCharToPowerModulo(char c, BigInteger n, BigInteger m) {
 		int cInt = c;
 		BigInteger cIntBig = new BigInteger(Integer.toString(cInt));
-		System.out.print(c+ ": " + cInt);
+		System.out.print(c+ ": " + (cInt<100 ? " " : "") + cInt);
 		BigInteger toReturn = MathFunctions.raiseNumToExponentModulo(cIntBig, n, m);
 		System.out.println(" --[^pubKey]--> " + toReturn);
 		

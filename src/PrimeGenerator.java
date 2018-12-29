@@ -24,7 +24,7 @@ public class PrimeGenerator {
 	
 	// return whether a number is a probable prime based on miller-rabin test
 	private static boolean isProbablePrime(BigInteger n) {
-		int kTests = 100;
+		int kTests = 1;
 		for (int i = 0; i < kTests; i++) {
 			if (applyMillerRabin(n) == false) return false;
 		}
@@ -56,12 +56,11 @@ public class PrimeGenerator {
 		
 		
 		// Step 3: Compute b_0 = a^m (mod n), b_i = (b_(i-1))^2
-		int iMAX = 150;
-		BigInteger b_i = null;
+		int iMAX = 10;
+		BigInteger b_i = MathFunctions.raiseNumToExponentModulo(a, m, n);;
 		BigInteger N_MINUS_ONE = n.subtract(BigInteger.ONE);
 		for (int i = 0; i < iMAX; i++) {
 			if (i == 0) {
-				b_i = MathFunctions.raiseNumToExponentModulo(a, m, n);
 				if (b_i.compareTo(ONE) == 0 || b_i.compareTo(N_MINUS_ONE) == 0) return true; // is probably prime
 			} else { // for i = 1, 2,..
 				if (b_i.compareTo(ONE) == 0) return false; // composite for sure
